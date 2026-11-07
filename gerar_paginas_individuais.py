@@ -21,7 +21,7 @@ import json
 import re
 from pathlib import Path
 
-SITE_DIR = Path(r"C:\Users\Administrator\Desktop\IzzatCar\site")
+SITE_DIR = Path(__file__).resolve().parent
 PECA_DIR = SITE_DIR / "peca"
 PRODUCTS_FILE = SITE_DIR / "products.json"
 INDEX_FILE = SITE_DIR / "catalogo_index.js"

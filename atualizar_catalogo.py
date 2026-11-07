@@ -16,13 +16,13 @@ env_path = Path(r"C:\Users\Administrator\Desktop\IzzatCar\MercadoLivre\.env")
 load_dotenv(env_path)
 TOKEN = os.getenv("ML_ACCESS_TOKEN")
 SELLER_ID = "2932888131"
-SITE_DIR = Path(r"C:\Users\Administrator\Desktop\IzzatCar\site")
+SITE_DIR = Path(__file__).resolve().parent
 
 # O token do .env local vive expirando (6h) e renovar aqui rotaciona o refresh
 # token que o backend tambem usa. Por isso puxamos os anuncios pelo proxy do
 # backend, que mantem o token dele valido sozinho.
 # ADMIN_KEY NUNCA entra neste arquivo: o repo do site e publico.
-BACKEND = os.getenv("BACKEND_URL", "https://backend-production-0201.up.railway.app")
+BACKEND = os.getenv("BACKEND_URL", "https://izzat-backend.izzatcar.workers.dev")
 ADMIN_KEY = os.getenv("ADMIN_KEY", "")
 
 headers = {"Authorization": f"Bearer {TOKEN}"}
@@ -73,6 +73,11 @@ def fetch_items_backend():
             break
 
     print(f"✅ {len(raw)} anúncios recebidos")
+    # Download pela metade (backend caiu no meio) nao pode encolher o site:
+    # sem esta trava, uma falha apagaria centenas de paginas boas.
+    if total and len(raw) < total * 0.95:
+        print(f"❌ Baixou so {len(raw)} de {total} — abortando sem mexer no site.")
+        raise SystemExit(1)
     return raw
 
 

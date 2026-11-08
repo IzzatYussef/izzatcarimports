@@ -20,7 +20,8 @@ const rel = p.rel.map(pecaPorId).filter((x): x is Peca => !!x).slice(0, 8);
 const url = `${SITE}/peca/${p.slug}.html`;
 const nomeCarro = [p.b, p.m].filter(Boolean).join(' ');
 const serve = nomeCarro + (p.y ? `, ${p.y[0]} a ${p.y[1]}` : '');
-const titulo = `${p.n}${nomeCarro ? ` ${nomeCarro}` : ''}${p.y ? ` ${p.y[0]}–${p.y[1]}` : ''} | Izzat Car`;
+const codigo = (p.oem || '').split(/[\s,;/|]+/)[0];
+const titulo = `${p.n}${nomeCarro ? ` ${nomeCarro}` : ''}${p.y ? ` ${p.y[0]}–${p.y[1]}` : ''}${codigo ? ` ${codigo.toUpperCase()}` : ` ${p.id}`} | Izzat Car`;
 const descricao = `${p.t}. Peça original de carro com baixa legal no Detran-RS. R$ ${brl(p.p)}, nota fiscal e 90 dias de garantia. CDV nº 01060.`;
 const msg = `Olá! Vi no site esta peça:\n\n${p.t}\nR$ ${brl(p.p)}\n${url}\n\nServe e ainda tem?`;
 const trilha: [string, string][] = [['Início', '/index.html'], ['Catálogo', '/catalogo.html']];
@@ -151,4 +152,5 @@ const ld = {
   .barra-preco small { font-size: 14px; color: var(--ink-2); }
   .barra-compra .botao { --h: 48px; font-size: 15px; padding: 0 16px; }
   @media (min-width: 960px) { .barra-compra { display: none; } }
+  @media (max-width: 959px) { :global(body:has(.barra-compra)) { padding-bottom: 84px; } }
 </style>

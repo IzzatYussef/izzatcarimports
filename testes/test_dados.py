@@ -44,6 +44,11 @@ def test_dados_gerados():
     sem_modelo = sum(1 for x in by.values() if not x["m"])
     assert sem_modelo / len(by) < 0.04, f"{sem_modelo} pecas sem modelo"
     assert all("SELLER_SKU" not in json.dumps(x) for x in list(by.values())[:200])
+    # nada de promessa ainda nao confirmada pelo Maruf nas descricoes publicadas
+    import re
+    proibido = re.compile(r"lacre|retirada|presencial|hor[aá]rio|horas [uú]teis|d[ée]cada|frete|despach", re.I)
+    ruins = [x["id"] for x in by.values() if proibido.search(x["desc"])]
+    assert not ruins, f"{len(ruins)} descricoes com promessa nao confirmada: {ruins[:5]}"
 
 
 if __name__ == "__main__":

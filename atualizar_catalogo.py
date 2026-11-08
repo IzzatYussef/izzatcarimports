@@ -185,13 +185,15 @@ def get_items_descriptions(products):
         p["desc"] = antigos.get(p["id"], "")
 
     faltam = [p for p in products if not p["desc"]]
-    limite = int(os.getenv("DESC_POR_RODADA", "400"))
+    limite = int(os.getenv("DESC_POR_RODADA", "150"))
+    if not ADMIN_KEY:
+        print("⚠ ADMIN_KEY ausente: descricoes novas NAO foram buscadas")
     if ADMIN_KEY and faltam and limite > 0:
         h = {"X-Admin-Key": ADMIN_KEY}
 
         def pega(p):
             try:
-                r = requests.get(f"{BACKEND}/admin/ml_item_desc", params={"mlb": p["id"]}, headers=h, timeout=30)
+                r = requests.get(f"{BACKEND}/admin/ml_item_desc", params={"mlb": p["id"]}, headers=h, timeout=20)
                 if r.status_code == 200:
                     d = (r.json() or {}).get("data") or {}
                     return p, (d.get("plain_text") or "").strip()
@@ -200,7 +202,7 @@ def get_items_descriptions(products):
             return p, ""
 
         novos = 0
-        with cf.ThreadPoolExecutor(max_workers=6) as ex:
+        with cf.ThreadPoolExecutor(max_workers=8) as ex:
             for p, txt in ex.map(pega, faltam[:limite]):
                 if txt:
                     p["desc"] = txt

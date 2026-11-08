@@ -31,15 +31,16 @@ const ld = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemLi
 </Pagina>
 
 <style is:global>
-  .cat-pagina { padding-block: 20px 72px; }
+  .cat-pagina { padding-block: clamp(28px, 4vw, 56px) 72px; }
   .cat-cabeca { display: grid; gap: 10px; margin-bottom: 22px; max-width: 64ch; }
   .cat-cabeca h1 { margin: 0; font-size: clamp(40px, 5vw, 64px); }
   .cat-cabeca .lead { margin: 0; }
   .cat-busca { position: sticky; top: 76px; z-index: 30; }
-  @media (min-width: 960px) { .cat-busca { top: 96px; max-width: 760px; } }
-  .cat-limpar-texto { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; color: var(--ink-3); }
+  @media (min-width: 960px) { .cat-busca { top: 96px; } }
+  .cat-limpar-texto { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; color: var(--ink-3); }
   .cat-limpar-texto svg { width: 18px; height: 18px; }
   .cat-corpo { display: grid; gap: 28px; margin-top: 22px; }
+  .cat-corpo > * { min-width: 0; }
   @media (min-width: 1024px) { .cat-corpo { grid-template-columns: 264px minmax(0, 1fr); gap: 36px; } }
   .cat-lateral { display: none; }
   @media (min-width: 1024px) { .cat-lateral { display: block; position: sticky; top: 180px; align-self: start; max-height: calc(100vh - 200px); overflow-y: auto; padding-right: 6px; scrollbar-width: thin; } }
@@ -66,13 +67,14 @@ const ld = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemLi
   .cat-total b { font-stretch: 84%; font-weight: 800; font-size: 22px; color: var(--ink); }
   .cat-abrir-filtros { --h: 48px; padding: 0 16px; font-size: 15px; }
   @media (min-width: 1024px) { .cat-abrir-filtros { display: none; } }
-  .cat-ordem { width: 200px; }
+  .cat-ordem { width: 200px; max-width: 100%; }
+  @media (max-width: 420px) { .cat-ordem { width: 100%; } .cat-abrir-filtros { flex: 1; } .cat-total { flex-basis: 100%; } }
   .cat-ordem select { height: 48px; padding-top: 16px; }
   .cat-ativos { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-  .cat-ficha { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 10px 0 14px; border: 0; border-radius: 10px;
+  .cat-ficha { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 10px 0 14px; border: 0; border-radius: 10px;
                background: var(--ink); color: var(--bg); font-size: 14px; font-weight: 600; }
   .cat-ficha svg { width: 16px; height: 16px; opacity: .8; }
-  .cat-limpar { border: 0; background: none; font-weight: 650; font-size: 14px; color: var(--accent-text); padding: 0 8px; min-height: 36px; }
+  .cat-limpar { border: 0; background: none; font-weight: 650; font-size: 14px; color: var(--accent-text); padding: 0 10px; min-height: 44px; }
 
   .cat-grade { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   @media (min-width: 700px) { .cat-grade { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
@@ -88,6 +90,7 @@ const ld = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemLi
   .cat-vazio h2 { margin: 0 0 8px; font-stretch: 80%; font-weight: 820; font-size: 30px; line-height: 1.05; overflow-wrap: anywhere; }
   .cat-vazio p { margin: 0 0 18px; color: var(--ink-2); }
   .cat-vazio-botoes { display: flex; flex-wrap: wrap; gap: 10px; }
+  @media (max-width: 600px) { .cat-vazio-botoes .botao { width: 100%; } .cat-vazio img { max-width: 220px; } }
   .cat-atalhos { display: grid; gap: 28px; margin-top: 72px; padding-top: 32px; border-top: 1px solid var(--line); }
   @media (min-width: 900px) { .cat-atalhos { grid-template-columns: 1fr 1fr; } }
   .cat-atalhos h2 { margin: 0 0 12px; font-stretch: 86%; font-weight: 800; font-size: 18px; }

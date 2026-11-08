@@ -13,7 +13,8 @@ import { pecas, pecaPorId, resumo, whatsUrl, SITE } from '../lib/dados';
 
 const r = resumo();
 const todas = pecas();
-const destaque = todas.find((p) => /^Farol/.test(p.n) && p.fotos.length >= 5 && p.p > 300 && p.p < 2500 && p.m)
+const destaque = todas.find((p) => /^Farol/.test(p.n) && p.limpa && p.fotos.length >= 5 && p.p > 300 && p.p < 2500 && p.m)
+  ?? todas.find((p) => /^Farol/.test(p.n) && p.fotos.length >= 5 && p.p > 300 && p.p < 2500 && p.m)
   ?? todas.find((p) => p.c === 'Iluminação' && p.fotos.length >= 5)!;
 const chegou = r.chegou.map(pecaPorId).filter((p): p is NonNullable<typeof p> => !!p).slice(0, 12);
 const carros = r.carros.slice(0, 8);
@@ -112,7 +113,7 @@ const ld = {
           ['Confirme o seu carro', 'Manda o modelo e o ano. A gente confere na peça.'],
           ['Feche a compra', 'No Mercado Livre ou direto pelo WhatsApp.'],
           ['Receba em casa', 'Com nota fiscal e código de rastreio.']].map(([t, s], i) => (
-          <li><img src={`/arte/passo-${i + 1}.webp`} alt={`${i + 1}. ${t}. ${s}`} width="1024" height="1024" loading="lazy" decoding="async" /></li>
+          <li><img src={`/arte/passo-${i + 1}.webp`} alt={`${i + 1}. ${t}. ${s}`} width="1024" height="1024" loading="eager" decoding="async" /></li>
         ))}
       </ol>
     </div>
@@ -146,7 +147,15 @@ const ld = {
     <div class="moldura faq">
       <div class="cabeca-secao">
         <h2 id="t-faq" class="titulo-secao">Perguntas que a gente mais recebe</h2>
-        <p class="lead">Ficou outra dúvida? <a class="link" href={whatsUrl('Olá! Tenho uma dúvida:')}>Pergunte no WhatsApp</a>.</p>
+        <p class="lead">Respostas curtas, do jeito que a gente responde no balcão.</p>
+        <aside class="faq-ajuda">
+          <img src="/icones/conversa-192.webp" alt="" width="56" height="56" loading="lazy" />
+          <div>
+            <b>Ficou outra dúvida?</b>
+            <span>Manda no WhatsApp. Quem responde é a equipe do pátio.</span>
+          </div>
+          <a class="botao botao-laranja" href={whatsUrl('Olá! Tenho uma dúvida:')}>Perguntar no WhatsApp</a>
+        </aside>
       </div>
       <Acordeao itens={perguntas.map(([pergunta, resposta]) => ({ pergunta, resposta }))} />
     </div>
@@ -184,7 +193,7 @@ const ld = {
   .patio-videos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .patio-largo { grid-column: 1 / -1; aspect-ratio: 16 / 9; border-radius: 22px; overflow: hidden; background: #000; }
   .patio-alto { aspect-ratio: 4 / 5; border-radius: 22px; overflow: hidden; background: #000; }
-  .patio-videos :global(.v) { width: 100%; height: 100%; object-fit: cover; }
+  .patio-videos :global(.v) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 32%; }
   @media (min-width: 1024px) { .patio-videos { grid-template-columns: 1.6fr 1fr 1fr; } .patio-largo { grid-column: auto; aspect-ratio: auto; height: 100%; } .patio-alto { aspect-ratio: 9 / 14; } }
 
   .duas-artes { display: grid; gap: 20px; }
@@ -192,7 +201,13 @@ const ld = {
 
   .faq { display: grid; gap: 8px; }
   @media (min-width: 1024px) { .faq { grid-template-columns: .8fr 1.2fr; gap: 56px; align-items: start; } }
-  .faq-lista { display: grid; gap: 10px; }
+  .faq-ajuda { display: grid; grid-template-columns: auto 1fr; gap: 12px 14px; align-items: center; margin-top: 18px; padding: 18px; border-radius: 18px;
+               background: var(--surface); box-shadow: var(--shadow-1); }
+  .faq-ajuda img { width: 52px; height: 52px; }
+  .faq-ajuda b { display: block; font-size: 16.5px; }
+  .faq-ajuda span { display: block; font-size: 14.5px; color: var(--ink-2); }
+  .faq-ajuda .botao { grid-column: 1 / -1; }
+  @media (min-width: 1024px) { .faq .cabeca-secao { position: sticky; top: 110px; } }
   .pergunta { border-radius: 16px; background: var(--surface); box-shadow: var(--shadow-1); }
   .pergunta summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px;
                       padding: 18px 20px; font-weight: 650; font-size: 17px; }

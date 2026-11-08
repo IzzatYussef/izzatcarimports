@@ -18,6 +18,7 @@ const anos = c.anos ? `${c.anos[0]} a ${c.anos[1]}` : '';
   <div class="moldura">
     <TopoListagem trilha={[['Início', '/index.html'], ['Carros', '/carros.html'], [`${c.b} ${c.m}`, `/carros/${c.k}.html`]]}
       antes={c.b} titulo={c.m} apoio={`${c.c} peças originais${anos ? ` para ${c.b} ${c.m} de ${anos}` : ''}. Confira o ano e o código gravado; na dúvida, a gente confere pelo WhatsApp.`}>
+      <span slot="lado" class="mosaico-carro" aria-hidden="true">{c.capas.slice(0, 4).map((k) => <img src={foto(k, 'C')} alt="" width="200" height="200" />)}</span>
       <Atalhos titulo="Peças por sistema" itens={fams} />
     </TopoListagem>
     <section class="secao-lista">
@@ -29,4 +30,10 @@ const anos = c.anos ? `${c.anos[0]} a ${c.anos[1]}` : '';
     </section>
   </div>
 </Pagina>
-<style> .secao-lista { padding-bottom: 64px; } </style>
+<style>
+  .secao-lista { padding-bottom: 64px; }
+  .mosaico-carro { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: clamp(220px, 28vw, 360px); padding: 8px; border-radius: 24px;
+    background: var(--surface); box-shadow: var(--shadow-2); justify-self: center; }
+  .mosaico-carro img { width: 100%; aspect-ratio: 1; object-fit: contain; padding: 10%; border-radius: 16px; background: var(--plate); }
+  @media (max-width: 899px) { .mosaico-carro { display: none; } }
+</style>

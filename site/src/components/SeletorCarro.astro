@@ -43,7 +43,7 @@ const anos = Array.from({ length: anoAtual - 1994 }, (_, i) => anoAtual - i);
 </script>
 <style>
   .seletor-carro { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .seletor-carro .botao { grid-column: 1 / -1; height: 52px; }
+  .seletor-carro .botao { height: 52px; }
   @media (min-width: 640px) {
     .seletor-carro { grid-template-columns: 1.1fr 1.1fr .8fr auto; }
     .seletor-carro .botao { grid-column: auto; }

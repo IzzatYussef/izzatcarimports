@@ -151,8 +151,12 @@ export default function GaleriaTelaCheia({ fotos, titulo }: Props) {
       setArrasto(0);
       arrastoRef.current = 0;
       setAberta(true);
+      (window as any).__galeriaPendente = undefined;
     };
     window.addEventListener('abrir-galeria', abrir);
+    // clique que aconteceu antes da ilha montar (client:idle)
+    const pend = (window as any).__galeriaPendente;
+    if (typeof pend === 'number') abrir(new CustomEvent('abrir-galeria', { detail: { indice: pend } }));
     return () => window.removeEventListener('abrir-galeria', abrir);
   }, [fotos.length]);
 

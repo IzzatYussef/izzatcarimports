@@ -29,25 +29,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # products.json da rodada anterior (guarda as descricoes ja buscadas)
-      - uses: actions/cache@v4
+      # products.json da rodada anterior (descricoes ja buscadas) + analise das fotos
+      - uses: actions/cache/restore@v4
         with:
           path: |
             products.json
             categorias_ml.json
+            fotos_limpas.json
           key: catalogo-${{ github.run_id }}
           restore-keys: catalogo-
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install requests python-dotenv
+      - run: pip install requests python-dotenv pillow
 
       - name: Puxar anuncios ativos do Mercado Livre (pelo backend)
         env:
           ADMIN_KEY: ${{ secrets.ADMIN_KEY }}
           PYTHONIOENCODING: utf-8
         run: python -u atualizar_catalogo.py
+
+      # guarda o cache mesmo se o build falhar depois (nao perde descricoes buscadas)
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: |
+            products.json
+            categorias_ml.json
+            fotos_limpas.json
+          key: catalogo-${{ github.run_id }}
 
       - name: Preparar dados do site (marca, modelo, ano, busca)
         env:

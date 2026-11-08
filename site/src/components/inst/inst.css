@@ -23,7 +23,7 @@
 .inst-texto p { margin: 0 0 1em; font-size: 17px; line-height: 1.6; color: var(--ink-2); text-wrap: pretty; }
 .inst-texto p:last-child { margin-bottom: 0; }
 .inst-texto b { color: var(--ink); font-weight: 650; }
-.inst-texto a { color: var(--accent-text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.inst-texto a:not(.botao) { color: var(--accent-text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 
 .inst-duas { display: grid; gap: clamp(32px, 5vw, 72px); }
 @media (min-width: 900px) { .inst-duas { grid-template-columns: 1fr 1fr; align-items: center; } }
@@ -81,3 +81,15 @@
 @media (prefers-reduced-motion: reduce) {
   .inst-janela video { animation: none; }
 }
+
+@media (max-width: 600px) { .inst-acoes .botao { width: 100%; } }
+
+/* chamada final com arte ao lado (sem metade vazia) */
+.inst-chamada-com-arte { display: grid; gap: 24px; align-items: center; }
+.inst-chamada-texto { display: grid; gap: 16px; justify-items: start; }
+.inst-chamada-arte img { width: 100%; max-width: 380px; height: auto; border-radius: 20px; box-shadow: var(--shadow-1); margin-inline: auto; display: block; }
+@media (min-width: 900px) { .inst-chamada-com-arte { grid-template-columns: 1.2fr .8fr; } }
+/* video do galpao: corta a borda de baixo (mao de quem filmou) */
+.inst-janela video, .patio-videos video { object-position: 50% 32%; }
+.inst-janela--16x9 { aspect-ratio: 16 / 8; }
+@media (max-width: 700px) { .inst-janela--16x9 { aspect-ratio: 4 / 3; } }

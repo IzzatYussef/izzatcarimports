@@ -32,13 +32,14 @@ const ld = {
 
   <div class="moldura">
     <section class="inst-sec gar-destaque" aria-labelledby="h-prazo">
-      <div>
+      <div class="gar-selo">
+        <img src="/icones/garantia-192.webp" alt="" width="132" height="132" />
         <p class="inst-grande display" aria-hidden="true">90 dias</p>
         <h2 class="titulo-secao inst-h2 gar-sr" id="h-prazo">90 dias de garantia</h2>
       </div>
       <div class="inst-texto">
-        <p><b>Em toda peça.</b> A garantia vale para toda peça que a gente vende.</p>
-        <p><b>Nota fiscal em toda venda.</b> Toda compra sai com nota fiscal, para você guardar.</p>
+        <p class="gar-item"><img src="/icones/pecas-96.webp" alt="" width="44" height="44" /><span><b>Em toda peça.</b> A garantia vale para toda peça que a gente vende.</span></p>
+        <p class="gar-item"><img src="/icones/nota-fiscal-96.webp" alt="" width="44" height="44" /><span><b>Nota fiscal em toda venda.</b> Toda compra sai com nota fiscal, para você guardar.</span></p>
       </div>
     </section>
 
@@ -108,6 +109,11 @@ const ld = {
 <style>
   .gar-destaque { display: grid; gap: clamp(24px, 4vw, 56px); }
   @media (min-width: 900px) { .gar-destaque { grid-template-columns: 1.1fr 0.9fr; align-items: center; } }
+  .gar-selo { display: flex; align-items: center; gap: clamp(16px, 3vw, 36px); }
+  .gar-selo img { width: clamp(88px, 12vw, 150px); height: auto; filter: drop-shadow(0 18px 30px rgb(200 70 0 / .3)); }
+  .gar-selo .inst-grande { font-size: clamp(80px, 13vw, 190px); }
+  .gar-item { display: flex; gap: 14px; align-items: flex-start; padding: 18px; border-radius: 18px; background: var(--surface); box-shadow: var(--shadow-1); }
+  .gar-item img { width: 44px; height: 44px; flex: none; }
   .gar-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .gar-destaque .inst-texto p { margin-bottom: 1.2em; }
   .gar-destaque .inst-texto p:last-child { margin-bottom: 0; }

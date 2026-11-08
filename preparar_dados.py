@@ -271,20 +271,40 @@ def acentuar(texto):
     return re.sub(r"[A-Za-z]+", palavra, texto or "")
 
 
-SECOES_FORA = {"palavras-chave", "palavras chave", "sobre a empresa", "suporte ao cliente",
-               "envio", "envios", "garantia", "procedencia", "procedência", "pagamento",
-               "formas de pagamento", "atendimento", "importante", "observacao", "observação"}
+# Descricao: so as secoes SOBRE A PECA (lista de permissao). O resto do texto do
+# anuncio (empresa, garantia, envio, FAQ, palavras-chave...) tem promessas que o
+# site ainda nao confirmou e repete o que o site ja mostra padronizado.
+SECOES_OK = ("identificacao", "especificac", "condicao", "aplicacao", "veiculos compativeis",
+             "compatibilidade", "posicao", "funcao")
+# Linha com promessa ainda nao confirmada sai mesmo dentro das secoes permitidas.
+PROMESSA = re.compile(
+    r"lacre|retirada|presencial|hor[aá]rio|horas [uú]teis|\b24 ?h|d[eé]cada|an[uú]ncios|"
+    r"estoque com|localiza[cç][aã]o|endere[cç]o|frete|despach|telefone|whats|\(53\)|"
+    r"compatibilidade verificada|garantia|nota fiscal|envio|enviamos|correios|pix|parcel|"
+    r"cart[aã]o|desconto|promo", re.I)
+
+
+def _chave_titulo(linha):
+    t = gi.strip_accents(linha.lower())
+    t = re.sub(r"[=*#_]+", " ", t)
+    t = re.sub(r"^\s*\d+\s*[).:-]\s*", "", t.strip())
+    return re.sub(r"\s+", " ", t).strip(" :-")
 
 
 def descricao(texto):
-    """Descricao do ML em HTML limpo: titulos com acento e em frase,
-    sem as secoes de empresa/garantia/envio (o site mostra isso padronizado)."""
+    """Descricao do ML em HTML limpo: so secoes sobre a peca, titulos com acento,
+    sem promessas nao confirmadas."""
     from html import escape
-    blocos, par, pular = [], [], False
+    blocos, par = [], []
+    manter = True          # texto antes do 1o titulo: so se nao tiver promessa
 
     def fechar():
-        if par and not pular:
-            blocos.append("<p>" + escape(acentuar(" ".join(par))) + "</p>")
+        if par and manter:
+            linhas = [l for l in par if not PROMESSA.search(l)]
+            if linhas:
+                t = acentuar(" ".join(linhas))
+                t = re.sub(r"\b((?:19|20)\d{2}) at[ée] \1\b", r"\1", t)
+                blocos.append("<p>" + escape(t) + "</p>")
         par.clear()
 
     for linha in (texto or "").splitlines():
@@ -293,21 +313,26 @@ def descricao(texto):
             fechar()
             continue
         letras = [c for c in linha if c.isalpha()]
-        titulo = 3 <= len(linha) <= 70 and letras and all(c.isupper() for c in letras)
+        titulo = 3 <= len(linha) <= 80 and letras and all(c.isupper() for c in letras)
         if titulo:
             fechar()
-            chave = gi.strip_accents(linha.lower()).strip(" :-")
-            pular = chave in SECOES_FORA or chave.startswith("palavras")
-            if not pular:
-                t = acentuar(linha.lower())
-                blocos.append("<h3>" + escape(t[:1].upper() + t[1:].rstrip(":")) + "</h3>")
+            chave = _chave_titulo(linha)
+            manter = chave.startswith(SECOES_OK) and not PROMESSA.search(chave)
+            if manter:
+                t = acentuar(chave)
+                t = t[:1].upper() + t[1:]
+                t = re.sub(r"\s*\(leia com aten[cç][aã]o\)", "", t, flags=re.I)
+                blocos.append("<h3>" + escape(t) + "</h3>")
         else:
             par.append(linha)
     fechar()
-    # o 1o bloco costuma ser o titulo do anuncio repetido em caixa alta: some
-    if blocos and blocos[0].startswith("<h3>") and len(blocos) > 1 and blocos[1].startswith("<h3>"):
-        blocos.pop(0)
-    return "\n".join(blocos)
+    # titulo sem paragrafo embaixo some
+    limpo = []
+    for i, bl in enumerate(blocos):
+        if bl.startswith("<h3>") and (i + 1 == len(blocos) or blocos[i + 1].startswith("<h3>")):
+            continue
+        limpo.append(bl)
+    return "\n".join(limpo)
 
 
 def nome_limpo(titulo, marca, modelo):
@@ -390,6 +415,7 @@ def ficha(p):
 
 def codigos_busca(p):
     cods = " ".join(filter(None, [p.get("oem", ""), p.get("part_number", "")]))
+    cods = re.sub(r"[,;/|]+", " ", cods)                    # varios codigos numa linha so
     cods = re.sub(r"\b(19|20)\d{2}\b", " ", cods)          # anos grudados no PN
     cods = re.sub(r"[^0-9a-zA-Z ]", "", cods).lower()
     return " ".join(dict.fromkeys(cods.split()))[:120]
@@ -507,6 +533,9 @@ def main():
         # Modelo com uma peca so e quase sempre leitura errada: fica sem.
         if mod and sum(grafias[(mc, gi.chave_modelo(nome))].values()) < 2:
             mod = ""
+        if mod and (gi.chave_modelo(mod) == gi.chave_modelo(mc)
+                    or gi.chave_modelo(mod) in {gi.chave_modelo(a) for a in MARCAS.get(mc, [])}):
+            mod = ""
         a0, a1 = anos_do_titulo(p["title"])
         cat = cats.get(p.get("category_id"))
         fam = gi.familia(cat)
@@ -526,11 +555,17 @@ def main():
             "y": [a0, a1] if a0 else None,
             "c": fam or "Outros",
             "s": tipo,
-            "oem": (p.get("oem") or "").strip(),
+            "oem": " ".join(re.split(r"[\s,;/|]+", (p.get("oem") or "").strip())).strip(),
             "o": codigos_busca(p),
             "ficha": ficha(p),
             "desc": descricao(p.get("desc")),
         })
+
+    # 3b) Capa limpa: a 1a foto que mostra so a peca (sem o carro colado) vai pra frente.
+    import fotos_limpas
+    for x in pecas:   # 2a foto ORIGINAL do anuncio: quase nunca e montagem com carro
+        x["_seg"] = x["fotos"][1] if len(x["fotos"]) > 1 else None
+    fotos_limpas.ordenar_fotos(pecas)
 
     # 4) Familias: so as com 3+ pecas; o resto entra em "Outros" (uma vez so).
     fam_cnt = Counter(x["c"] for x in pecas)
@@ -554,6 +589,14 @@ def main():
     for (mc, mod), lst in sorted(por_carro.items(), key=lambda kv: -len(kv[1])):
         if len(lst) < MIN_CARRO:
             continue
+        # mosaico do carro: 2a foto original de pecas variadas (familias diferentes)
+        cands, fams_vistas = [], set()
+        for x in sorted(lst, key=lambda x: x["id"], reverse=True):
+            if x.get("_seg") and x["c"] not in fams_vistas:
+                cands.append(x["_seg"]); fams_vistas.add(x["c"])
+            if len(cands) >= 10:
+                break
+        boas = fotos_limpas.limpas(cands)[:4]
         anos_l = [y for x in lst if x["y"] for y in x["y"]]
         fams = Counter(x["c"] for x in lst)
         carros.append({
@@ -561,7 +604,9 @@ def main():
             "b": mc, "m": mod, "c": len(lst),
             "anos": [min(anos_l), max(anos_l)] if anos_l else None,
             "fams": [[n, c] for n, c in fams.most_common(6)],
-            "capas": [x["fotos"][0] for x in lst if x["fotos"]][:4],
+            # so capas limpas (sem o carro colado) no mosaico do carro
+            "capas": (boas + [x["fotos"][0] for x in lst if x["fotos"] and x.get("limpa")
+                              and x["fotos"][0] not in boas])[:4],
         })
 
     marcas = []
@@ -598,6 +643,8 @@ def main():
                 break
         x["rel"] = rel
 
+    for x in pecas:
+        x.pop("_seg", None)
     precos = sorted(x["p"] for x in pecas)
     resumo = {
         "updated": bruto.get("updated_at") or time.strftime("%Y-%m-%dT%H:%M:%S"),

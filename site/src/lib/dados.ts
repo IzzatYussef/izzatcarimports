@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 export type Peca = {
-  id: string; slug: string; t: string; p: number; fotos: string[]; ml: string;
+  id: string; slug: string; t: string; n: string; limpa?: boolean; p: number; fotos: string[]; ml: string;
   f: boolean; b: string; m: string; y: [number, number] | null; c: string; s: string;
   oem: string; o: string; ficha: [string, string][]; desc: string; rel: string[];
 };

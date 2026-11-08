@@ -159,7 +159,7 @@ export default function Catalogo({ total: totalInicial }: { total: number }) {
         </label>
       </fieldset>
       <Lista titulo="Tipo de peça" itens={facetas.tipos} ativo={f.tipo} aoEscolher={(v) => muda({ tipo: v })} limite={10} />
-      <fieldset className="cat-grupo">
+      {facetas.precos.some(([, , c]) => c > 0) && <fieldset className="cat-grupo">
         <legend>Preço</legend>
         <ul>
           {facetas.precos.filter(([, , c]) => c > 0).map(([k, rot, c]) => (
@@ -167,7 +167,7 @@ export default function Catalogo({ total: totalInicial }: { total: number }) {
               <span>{rot}</span><b className="num">{c.toLocaleString('pt-BR')}</b></button></li>
           ))}
         </ul>
-      </fieldset>
+      </fieldset>}
       <label className="cat-chave">
         <input type="checkbox" checked={!!f.frete} onChange={(e) => muda({ frete: e.target.checked })} />
         <span className="cat-chave-trilho" aria-hidden="true"><i /></span>
@@ -184,7 +184,7 @@ export default function Catalogo({ total: totalInicial }: { total: number }) {
     <div className="cat">
       <form className="busca cat-busca" role="search" onSubmit={(e) => { e.preventDefault(); muda({ q: texto }); (document.activeElement as HTMLElement)?.blur(); }}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
-        <input id="busca" type="search" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder="Peça, carro ou código gravado"
+        <input id="busca" type="search" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder="Peça, carro ou código"
                aria-label="Buscar no catálogo" autoComplete="off" enterKeyHint="search" />
         {texto && <button type="button" className="cat-limpar-texto" aria-label="Apagar busca" onClick={() => { setTexto(''); muda({ q: '' }); }}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg></button>}

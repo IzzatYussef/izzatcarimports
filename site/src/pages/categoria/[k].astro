@@ -17,7 +17,7 @@ const tipos = conta((p) => p.s).slice(0, 14).map(([n, q]) => [n, q, `/catalogo.h
   <div class="moldura">
     <TopoListagem trilha={[['Início', '/index.html'], ['Catálogo', '/catalogo.html'], [f.n, `/categoria/${f.k}.html`]]}
       titulo={f.n} apoio={`${f.c} peças originais de ${f.n.toLowerCase()} no estoque. Escolha a marca do seu carro para chegar mais rápido.`}>
-      <img slot="lado" class="cat-peca" src={`/categorias/${f.k}.webp`} alt="" width="320" height="320" />
+      <span slot="lado" class="palco-peca"><img src={`/categorias/${f.k}.webp`} alt="" width="320" height="320" /></span>
       <Atalhos titulo="Por marca do carro" itens={marcas} />
       <Atalhos titulo="Por tipo" itens={tipos} />
     </TopoListagem>
@@ -26,5 +26,7 @@ const tipos = conta((p) => p.s).slice(0, 14).map(([n, q]) => [n, q, `/catalogo.h
 </Pagina>
 <style>
   .secao-lista { padding-bottom: 72px; }
-  .cat-peca { width: clamp(180px, 22vw, 300px); height: auto; justify-self: center; filter: drop-shadow(0 24px 30px rgb(0 0 0 / .18)); }
+  .palco-peca { position: relative; display: grid; place-items: center; width: clamp(200px, 26vw, 340px); aspect-ratio: 1; justify-self: center; border-radius: 50%;
+    background: radial-gradient(closest-side, var(--surface) 62%, color-mix(in oklab, var(--accent), transparent 88%) 63%, transparent 64%), radial-gradient(closest-side, color-mix(in oklab, var(--accent), transparent 90%), transparent); }
+  .palco-peca img { width: 78%; height: auto; filter: drop-shadow(0 22px 26px rgb(0 0 0 / .2)); }
 </style>

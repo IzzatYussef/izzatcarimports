@@ -6,7 +6,7 @@ e publicado sozinho no GitHub Pages a cada 30 minutos.
 ## O caminho dos dados
 1. `atualizar_catalogo.py` puxa os anúncios ativos pelo backend (Cloudflare) com o segredo
    `ADMIN_KEY` e grava `products.json` (só no robô; não vai pro ar). Busca também as
-   descrições que faltam (até 400 por rodada).
+   descrições que faltam (até 150 por rodada).
 2. `preparar_dados.py` lê o `products.json` e gera:
    - `site/src/data/pecas.json` e `resumo.json` (usados para montar as páginas);
    - `site/public/dados/busca.json` (o índice que a busca do navegador usa).

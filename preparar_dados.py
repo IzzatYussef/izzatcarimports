@@ -338,7 +338,8 @@ def descricao(texto):
 def nome_limpo(titulo, marca, modelo):
     """'Lanterna Esquerda Tampa Traseira Volvo Xc 60 18/24 A045591'
     -> 'Lanterna esquerda tampa traseira'. Carro, ano e codigo aparecem a parte."""
-    t = gi.ANOS_RE.sub(" ", titulo)
+    t = CODIGO_SEPARADO.sub(lambda m: m.group(1) + m.group(2), titulo)   # "Xc 60" -> "Xc60"
+    t = gi.ANOS_RE.sub(" ", t)
     t = re.sub(r"\b(19|20)\d{2}\s*(a|até|ate|/|-)\s*(19|20)\d{2}\b", " ", t, flags=re.I)
     t = re.sub(r"\b(19|20)\d{2}\b", " ", t)
     for m in list(_ALIAS_RE.finditer(gi.strip_accents(t).lower()))[::-1]:

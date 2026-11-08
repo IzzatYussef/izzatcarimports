@@ -13,7 +13,11 @@ e publicado sozinho no GitHub Pages a cada 30 minutos.
    Aqui ficam a leitura de **marca, modelo e ano** pelo título e o **nome limpo** da peça.
    Testes: `python testes/test_dados.py`.
 3. `site/` é um projeto **Astro**: `npm --prefix site run build` gera `site/dist/`.
-4. O workflow `.github/workflows/atualizar.yml` faz 1→2→3, confere os links e publica `site/dist`.
+4. O workflow `.github/workflows/atualizar.yml` faz 1→2→3, confere os links e publica `site/dist` no GitHub Pages
+   e, se existirem os segredos `CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID`, também no Worker `izzatcar-site`
+   (`site/wrangler.jsonc`, servido sem redirecionar `.html`; `site/worker/index.js` só trata `/` e 404).
+5. `fotos_limpas.py` escolhe a capa de cada peça (foto só da peça); cache em `fotos_limpas.json`.
+6. Prévia (noindex): `PREVIA=1 npx astro build` → `site/dist-previa` → `wrangler deploy --config wrangler.previa.jsonc`.
 
 ## Endereços (não mudar — o Google já conhece)
 - `/peca/<slug>-<MLB>.html` — o `slugify` é o MESMO de `gerar_paginas_individuais.py`.

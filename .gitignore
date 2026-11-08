@@ -9,3 +9,5 @@ site/src/data/pecas.json
 site/src/data/resumo.json
 site/public/dados/
 __pycache__/
+site/dist-previa/
+site/.wrangler/

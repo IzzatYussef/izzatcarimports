@@ -7,6 +7,8 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://izzatcarimports.com.br',
   output: 'static',
+  // PREVIA=1 gera a prévia (noindex) em dist-previa, sem tocar no dist oficial
+  outDir: process.env.PREVIA === '1' ? './dist-previa' : './dist',
   trailingSlash: 'never',
   build: { format: 'file', inlineStylesheets: 'auto' },
   compressHTML: true,

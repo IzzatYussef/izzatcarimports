@@ -7,6 +7,8 @@ interface Props {
 const { titulo, descricao = 'Peças originais de carros com baixa legal no Detran-RS. Nota fiscal e 90 dias de garantia em toda peça. Envio para todo o Brasil.',
         direcao = 'a', canonical, ogImagem = '/identidade/og.jpg', noindex = false } = Astro.props;
 const canon = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
+// prévia pública (Cloudflare): o Google não indexa a cópia congelada do catálogo
+const previa = process.env.PREVIA === '1';
 ---
 <!doctype html>
 <html lang="pt-BR" data-direcao={direcao}>
@@ -16,7 +18,7 @@ const canon = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
   <title>{titulo}</title>
   <meta name="description" content={descricao} />
   <link rel="canonical" href={canon} />
-  {noindex && <meta name="robots" content="noindex, nofollow" />}
+  {(noindex || previa) && <meta name="robots" content="noindex, nofollow" />}
   <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)" /><meta name="theme-color" content="#0f0f11" media="(prefers-color-scheme: dark)" />
   <link rel="icon" href="/identidade/carro.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://http2.mlstatic.com" crossorigin />

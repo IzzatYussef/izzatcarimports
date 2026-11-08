@@ -13,7 +13,7 @@ import { pecas, pecaPorId, resumo, whatsUrl, SITE } from '../lib/dados';
 
 const r = resumo();
 const todas = pecas();
-const destaque = todas.find((p) => /^Farol/.test(p.n) && p.limpa && p.fotos.length >= 5 && p.p > 300 && p.p < 2500 && p.m)
+const destaque = todas.find((p) => /^Farol/.test(p.n) && !/milha|neblina|auxiliar/i.test(p.n) && p.limpa && p.fotos.length >= 5 && p.p > 300 && p.p < 2500 && p.m)
   ?? todas.find((p) => /^Farol/.test(p.n) && p.fotos.length >= 5 && p.p > 300 && p.p < 2500 && p.m)
   ?? todas.find((p) => p.c === 'Iluminação' && p.fotos.length >= 5)!;
 const chegou = r.chegou.map(pecaPorId).filter((p): p is NonNullable<typeof p> => !!p).slice(0, 12);
@@ -48,6 +48,7 @@ const ld = {
 <Pagina titulo="Izzat Car Imports | Peças originais de desmanche legalizado"
         descricao={`Peças originais de carros com baixa legal no Detran-RS (CDV nº 01060). Nota fiscal e 90 dias de garantia em toda peça. Ache pelo carro ou pelo código gravado.`}>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(ld)} />
+  <link slot="head" rel="preload" as="image" href="/midia/v-showroom.jpg" fetchpriority="high" />
 
   <Abertura destaque={destaque}>
     <SugestoesBusca slot="busca" client:idle tamanho="grande" placeholder="Peça, carro ou código" />
@@ -78,7 +79,7 @@ const ld = {
 
   <section class="secao">
     <div class="moldura">
-      <BannerArte arte="/banners/A_oficina_clara" href={whatsUrl(msgServe)}
+      <BannerArte arte="/banners/A_oficina_clara" movel="/arte/serve-movel" href={whatsUrl(msgServe)}
         texto="Serve no meu carro? Manda o modelo e o ano. A gente confere no pátio e te responde com foto. Chamar no WhatsApp" />
     </div>
   </section>
@@ -136,9 +137,9 @@ const ld = {
 
   <section class="secao">
     <div class="moldura duas-artes">
-      <BannerArte arte="/arte/banner-oficinas" href={whatsUrl(msgOficina)}
+      <BannerArte arte="/arte/banner-oficinas" movel="/arte/oficinas-movel" href={whatsUrl(msgOficina)}
         texto="Oficinas e revendas: separamos as peças pra sua oficina. Manda a lista com carro e ano: a gente confere e responde com foto e código. Falar com a gente" />
-      <BannerArte arte="/arte/banner-nao-achou" href={whatsUrl(msgProcura)}
+      <BannerArte arte="/arte/banner-nao-achou" movel="/arte/nao-achou-movel" href={whatsUrl(msgProcura)}
         texto="Não achou a peça? A gente procura no pátio. Nem toda peça está anunciada. Manda o carro e a peça no WhatsApp. Chamar no WhatsApp" />
     </div>
   </section>

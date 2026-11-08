@@ -13,7 +13,7 @@ const capas = [...c.capas, ...c.capas].slice(0, 4);
   <span class="carro-dados">
     <span class="carro-marca">{c.b}</span>
     <span class="carro-nome">{c.m}</span>
-    <span class="carro-meta num">{c.anos ? `${c.anos[0]} a ${c.anos[1]}` : 'Vários anos'}<i aria-hidden="true"></i>{c.c} peças</span>
+    <span class="carro-meta num"><span>{c.anos ? `${c.anos[0]} a ${c.anos[1]}` : 'Vários anos'}</span><span class="carro-qtd">{c.c} peças</span></span>
   </span>
 </a>
 <style>
@@ -24,8 +24,9 @@ const capas = [...c.capas, ...c.capas].slice(0, 4);
   .carro-dados { display: grid; gap: 2px; padding: 0 6px; }
   .carro-marca { font-size: 13px; font-weight: 650; color: var(--accent-text); }
   .carro-nome { font-stretch: 78%; font-weight: 820; font-size: 26px; line-height: 1.05; }
-  .carro-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; font-size: 13.5px; color: var(--ink-2); white-space: nowrap; }
-  .carro-meta i { width: 4px; height: 4px; border-radius: 50%; background: var(--ink-3); }
+  .carro-meta { display: flex; flex-direction: column; gap: 0; font-size: 13.5px; color: var(--ink-2); white-space: nowrap; }
+  @media (min-width: 900px) { .carro-meta { flex-direction: row; align-items: center; gap: 8px; }
+    .carro-qtd::before { content: ""; display: inline-block; width: 4px; height: 4px; margin-right: 8px; border-radius: 50%; background: var(--ink-3); vertical-align: middle; } }
   @media (hover: hover) { .carro:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); }
     .carro:hover .carro-mosaico img:first-child { transform: scale(1.06); } }
 </style>

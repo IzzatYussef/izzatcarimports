@@ -43,6 +43,8 @@ function termos(texto: string): string[] {
 
 export class Busca {
   itens: Item[];
+  /** true quando nenhuma peca tinha TODAS as palavras e a lista mostra as mais proximas */
+  aproximado = false;
   ms: MiniSearch<Item>;
   constructor(ix: Indice) {
     this.itens = ix.id.map((id, k) => ({
@@ -78,10 +80,11 @@ export class Busca {
     if (mAno && !/\b(2008|3008|5008|2008)\b/.test(q)) { anoQ = Number(mAno[1]); texto = q.replace(mAno[0], ' ').trim(); }
     if (texto) {
       let r = this.ms.search(texto);
-      if (!r.length) r = this.ms.search(texto, { combineWith: 'OR' }).slice(0, 300);
+      this.aproximado = false;
+      if (!r.length) { r = this.ms.search(texto, { combineWith: 'OR' }).slice(0, 300); this.aproximado = r.length > 0; }
       score = new Map(r.map((x) => [x.id as number, x.score]));
       base = r.map((x) => this.itens[x.id as number]);
-    } else base = this.itens;
+    } else { base = this.itens; this.aproximado = false; }
 
     const ano = f.ano || anoQ;
     const faixa = FAIXAS.find((x) => x[0] === f.preco);

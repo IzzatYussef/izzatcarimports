@@ -112,7 +112,11 @@ export default function Catalogo({ total: totalInicial }: { total: number }) {
   }, [texto]);
 
   const fDiferido = useDeferredValue(f);
-  const resultado = useMemo(() => (busca ? busca.procurar(fDiferido) : []), [busca, fDiferido]);
+  const [resultado, aproximado] = useMemo(() => {
+    if (!busca) return [[] as Item[], false] as const;
+    const r = busca.procurar(fDiferido);
+    return [r, busca.aproximado] as const;
+  }, [busca, fDiferido]);
   const facetas = useMemo(() => (busca ? busca.facetas(fDiferido) : null), [busca, fDiferido]);
 
   useEffect(() => { if (busca) escreverUrl(f); setQtd(LOTE); }, [f, busca]);
@@ -233,6 +237,16 @@ export default function Catalogo({ total: totalInicial }: { total: number }) {
             </div>
           )}
 
+          {busca && resultado.length > 0 && aproximado && (
+            <div className="cat-aviso">
+              <img src="/icones/conversa-96.webp" alt="" width={44} height={44} />
+              <div>
+                <b>Não achamos “{f.q}” anunciado.</b>
+                <span>Nem toda peça está no site. Mande no WhatsApp que a gente procura no pátio. Abaixo, as peças mais próximas.</span>
+              </div>
+              <a className="botao botao-laranja" href={whats(`Olá! Procuro: ${procuro}. Não achei no site, tem no pátio?`)}>Procurar no pátio</a>
+            </div>
+          )}
           {busca && resultado.length > 0 && (
             <>
               <div className="cat-grade">{lista.map((it, i) => <Etiqueta key={it.id} it={it} eager={i < 4} />)}</div>

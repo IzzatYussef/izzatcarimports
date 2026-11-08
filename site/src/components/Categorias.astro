@@ -8,7 +8,7 @@ const nomes: Record<string, string> = { 'Peças de Interior': 'Interior', 'Peça
   {fams.map((f) => (
     <li>
       <a class="cat" href={`/catalogo.html?tipo=${encodeURIComponent(f.n)}`}>
-        <span class="cat-palco"><img src={`/categorias/${f.k}.webp`} alt="" width="320" height="320" loading="lazy" decoding="async" /></span>
+        <span class="cat-palco"><img src={`/categorias/${f.k}-360.webp`} alt="" width="360" height="360" loading="lazy" decoding="async" /></span>
         <span class="cat-nome">{nomes[f.n] ?? f.n}</span>
         <span class="cat-qtd num">{f.c.toLocaleString('pt-BR')} peças</span>
       </a>

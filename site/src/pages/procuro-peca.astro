@@ -33,7 +33,7 @@ const ld = {
     </nav>
     <div class="pc-hero">
       <figure class="pc-arte">
-        <img src="/arte/banner-nao-achou.webp" alt="Não achou a peça? A gente procura no pátio. Nem toda peça está anunciada. Manda o carro e a peça no WhatsApp." width="1536" height="1024" fetchpriority="high" decoding="async" />
+        <picture><source media="(max-width: 700px)" srcset="/arte/nao-achou-movel.webp" type="image/webp" width="768" height="1152" /><img src="/arte/banner-nao-achou.webp" alt="Não achou a peça? A gente procura no pátio. Nem toda peça está anunciada. Manda o carro e a peça no WhatsApp." width="1536" height="1024" fetchpriority="high" decoding="async" /></picture>
       </figure>
       <div class="pc-texto">
         <h1 class="display pc-h1">Não achou a peça?</h1>
@@ -239,6 +239,7 @@ const ld = {
 
   .pc-hero { display: grid; gap: clamp(24px, 4vw, 48px); align-items: center; }
   .pc-arte { margin: 0; border-radius: 28px; overflow: hidden; aspect-ratio: 3 / 2; background: var(--surface-2); box-shadow: var(--shadow-1); }
+  @media (max-width: 700px) { .pc-arte { aspect-ratio: 2 / 3; } }
   .pc-arte img { width: 100%; height: 100%; object-fit: cover; }
   .pc-h1 { font-size: clamp(40px, 8.6vw, 104px); margin: 0; }
   .pc-lead { margin: clamp(16px, 2vw, 24px) 0 0; max-width: 46ch; }

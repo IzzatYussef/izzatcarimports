@@ -275,3 +275,6 @@
 
 /* botao com texto longo quebra a linha em tela estreita em vez de empurrar a pagina */
 @media (max-width: 420px) { .botao { white-space: normal; height: auto; min-height: var(--h); padding-block: 10px; text-align: center; line-height: 1.25; } }
+
+/* o anel de foco fica na caixa (.busca:focus-within); o campo de dentro nao ganha outro contorno */
+.busca input:focus, .busca input:focus-visible { outline: none; box-shadow: none; }

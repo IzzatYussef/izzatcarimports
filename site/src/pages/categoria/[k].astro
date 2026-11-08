@@ -4,10 +4,13 @@ import TopoListagem from '../../components/TopoListagem.astro';
 import GradePecas from '../../components/GradePecas.astro';
 import Atalhos from '../../components/Atalhos.astro';
 import { pecas, resumo } from '../../lib/dados';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 export function getStaticPaths() { return resumo().familias.filter((f) => f.n !== 'Outros').map((f) => ({ params: { k: f.k }, props: { k: f.k } })); }
 const f = resumo().familias.find((x) => x.k === Astro.props.k)!;
 const lista = pecas().filter((p) => p.c === f.n).sort((a, b) => (b.id > a.id ? 1 : -1));
 const base = `/catalogo.html?tipo=${encodeURIComponent(f.n)}`;
+const recorte = existsSync(join(process.cwd(), 'public', 'categorias', `${f.k}.webp`)) ? `/categorias/${f.k}.webp` : '/icones/pecas-192.webp';
 const conta = (chave: (p: (typeof lista)[number]) => string) => Object.entries(lista.reduce<Record<string, number>>((o, p) => { const k = chave(p); if (k) o[k] = (o[k] || 0) + 1; return o; }, {})).sort((a, b) => b[1] - a[1]);
 const marcas = conta((p) => p.b).map(([n, q]) => [n, q, `${base}&marca=${encodeURIComponent(n)}`] as [string, number, string]);
 const tipos = conta((p) => p.s).slice(0, 14).map(([n, q]) => [n, q, `/catalogo.html?q=${encodeURIComponent(n)}&tipo=${encodeURIComponent(f.n)}`] as [string, number, string]);
@@ -17,7 +20,7 @@ const tipos = conta((p) => p.s).slice(0, 14).map(([n, q]) => [n, q, `/catalogo.h
   <div class="moldura">
     <TopoListagem trilha={[['Início', '/index.html'], ['Catálogo', '/catalogo.html'], [f.n, `/categoria/${f.k}.html`]]}
       titulo={f.n} apoio={`${f.c} peças originais de ${f.n.toLowerCase()} no estoque. Escolha a marca do seu carro para chegar mais rápido.`}>
-      <span slot="lado" class="palco-peca"><img src={`/categorias/${f.k}.webp`} alt="" width="320" height="320" /></span>
+      <span slot="lado" class="palco-peca"><img src={recorte} alt="" width="320" height="320" /></span>
       <Atalhos titulo="Por marca do carro" itens={marcas} />
       <Atalhos titulo="Por tipo" itens={tipos} />
     </TopoListagem>

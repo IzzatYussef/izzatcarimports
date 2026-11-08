@@ -1,6 +1,10 @@
 ---
 // Cada categoria = uma peca REAL do nosso estoque, recortada (public/categorias).
 import { resumo } from '../lib/dados';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+// categoria nova (sem recorte ainda) usa o disco aprovado de pecas
+const img = (k: string) => existsSync(join(process.cwd(), 'public', 'categorias', `${k}-360.webp`)) ? `/categorias/${k}-360.webp` : '/icones/pecas-192.webp';
 const fams = resumo().familias.filter((f) => f.n !== 'Outros');
 const nomes: Record<string, string> = { 'Peças de Interior': 'Interior', 'Peças de Exterior': 'Exterior' };
 ---
@@ -8,7 +12,7 @@ const nomes: Record<string, string> = { 'Peças de Interior': 'Interior', 'Peça
   {fams.map((f) => (
     <li>
       <a class="cat" href={`/catalogo.html?tipo=${encodeURIComponent(f.n)}`}>
-        <span class="cat-palco"><img src={`/categorias/${f.k}-360.webp`} alt="" width="360" height="360" loading="lazy" decoding="async" /></span>
+        <span class="cat-palco"><img src={img(f.k)} alt="" width="360" height="360" loading="lazy" decoding="async" /></span>
         <span class="cat-nome">{nomes[f.n] ?? f.n}</span>
         <span class="cat-qtd num">{f.c.toLocaleString('pt-BR')} peças</span>
       </a>

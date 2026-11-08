@@ -77,7 +77,7 @@ export class Busca {
     let texto = q;
     // um ano solto na busca ("palio 2010") vira filtro de ano
     const mAno = q.match(/\b(19[89]\d|20[0-3]\d)\b/);
-    if (mAno && !/\b(2008|3008|5008|2008)\b/.test(q)) { anoQ = Number(mAno[1]); texto = q.replace(mAno[0], ' ').trim(); }
+    if (mAno && !(/peugeot/i.test(q) && /\b(2008|3008|5008)\b/.test(q))) { anoQ = Number(mAno[1]); texto = q.replace(mAno[0], ' ').trim(); }
     if (texto) {
       let r = this.ms.search(texto);
       this.aproximado = false;
